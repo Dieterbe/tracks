@@ -1,0 +1,6 @@
+<% @thought = thought_edit_form %>
+<%= hidden_field( "thought", "project_id" ) %>
+<%= text_area( "thought", "body", "cols" => 70, "rows" => 15, "tabindex" => 1 ) %>
+<br /><br />
+<input type="submit" value="Update" tabindex="2" />
+<% @thought = nil %>

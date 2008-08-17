@@ -1,0 +1,19 @@
+<div class="thought-group" id="list-thoughts-container" <%= " style=\"display:none\"" if thought_group.empty? %>>
+  <h2><span id="thoughts-count" class="badge"><%= thought_group.length %></span>Thoughts</h2>
+  <div class="alpha_sort">
+    <%= link_to("Sort Alphabetically", alphabetize_thoughts_path(),
+                 :class => "alphabetize_link", :title => "Sort these thoughts alphabetically") %>
+    <%  apply_behavior '.alphabetize_link:click', :prevent_default => true do |page, element|
+          page.confirming 'Are you sure that you want to sort these thoughts alphabetically? This will replace the existing sort order.' do
+            page << "alphaSort = this.up('.alpha_sort');
+                     alphaSort.startWaiting();"
+            page << remote_to_href(:complete => "alphaSort.stopWaiting()")
+          end
+        end
+     %></div>
+  
+  <div id="list-thoughts" class="thought-list">
+    <%= render :partial => 'thought_listing', :collection => thought_group %>
+  </div>
+  <%= sortable_element "list-thoughts", get_listing_sortable_options() %>
+</div>

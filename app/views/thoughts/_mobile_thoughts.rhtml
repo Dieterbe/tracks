@@ -1,0 +1,13 @@
+<% thought = mobile_thoughts -%>
+<div class="mobile_thought">
+  <%= sanitize(textilize_without_paragraph(thought.body)) %>
+</div>
+<div class="mobile_thought_info">
+  <br/>
+  <%= link_to("In: " + thought.project.name, formatted_project_path(thought.project, :m)) %>
+  Created: <%= format_date(thought.created_at) %>
+  <% if thought.updated_at? -%>
+  &nbsp;|&nbsp;Modified: <%= format_date(thought.updated_at) %>
+<% end -%>
+</div>
+<% thought = nil -%>

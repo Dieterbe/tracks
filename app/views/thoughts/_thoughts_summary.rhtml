@@ -1,0 +1,6 @@
+<% thought = thoughts_summary -%>
+<div class="thought_wrapper" id="<%= dom_id(thought) %>">
+<%= link_to( image_tag("blank.png", :border => 0), thought_path(thought), :title => "Show thought", :class => "link_to_thoughts icon") %>&nbsp;
+<%= truncated_thought(thought) %>
+</div>
+<% thought = nil -%>

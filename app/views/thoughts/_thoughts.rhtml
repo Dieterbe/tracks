@@ -1,0 +1,39 @@
+<% thought = thoughts -%>
+<div id="<%= dom_id(thought, 'container') %>">
+     <h2><%= link_to("Note #{thought.id}", thought_path(thought), :title => "Show thought #{thought.id}" ) %></h2>
+  <div id="<%= dom_id(thought) %>">
+       <%= sanitize(textilize(thought.body)) %>
+   
+       <div class="thought_footer">
+    <%= link_to_remote( 
+        image_tag("blank.png", 
+            :title =>"Delete this thought", 
+            :class=>"delete_item",
+            :id => "delete_thought_"+thought.id.to_s), 
+        :update => dom_id(thought),
+        :loading => visual_effect(:fade, dom_id(thought, 'container')),
+        :complete => "Element.remove('#{dom_id(thought, 'container')}');",
+        :url => thought_path(thought),
+        :method => :delete,
+        :confirm => "Are you sure that you want to delete the thought \'#{thought.id.to_s}\'?" ) + "&nbsp;" -%>
+<%= link_to_function(image_tag( "blank.png", :title => "Edit item", :class=>"edit_item"),
+                     "Element.toggle('#{dom_id(thought)}'); Element.toggle('#{dom_id(thought, 'edit')}'); Effect.Appear('#{dom_id(thought, 'edit')}'); Form.focusFirstElement('#{dom_id(thought, 'edit_form')}');" ) + " | " %>
+    <%= link_to("In: " + thought.project.name, project_path(thought.project), :class=>"footer_link" ) %>&nbsp;|&nbsp;
+    Created: <%= format_date(thought.created_at) %>
+    <% if thought.updated_at? -%>
+      &nbsp;|&nbsp;Modified: <%= format_date(thought.updated_at) %>
+    <% end -%>
+  </div>
+</div>
+
+<div id="<%= dom_id(thought, 'edit') %>" class="edit-form" style="display:none;">
+     <% form_remote_tag  :url => thought_path(thought),
+                         :method => :put,
+                    :html => { :id => dom_id(thought, 'edit_form'), :class => "inline-form" },
+                    :update => dom_id(thought, 'container'),
+                    :complete => visual_effect(:appear, dom_id(thought, 'container')) do -%>
+         <%= render :partial => "thoughts/thought_edit_form", :object => thought %>
+     <% end -%>
+     </div>
+</div>
+<% thought = nil -%>

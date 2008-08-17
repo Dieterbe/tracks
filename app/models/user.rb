@@ -91,7 +91,8 @@ class User < ActiveRecord::Base
   has_one :preference, :dependent => :destroy
   has_many :taggings
   has_many :tags, :through => :taggings, :select => "DISTINCT tags.*"
-  
+  has_many :thoughts, :order => "created_at ASC", :dependent => :delete_all  
+
   attr_protected :is_admin
 
   validates_presence_of :login

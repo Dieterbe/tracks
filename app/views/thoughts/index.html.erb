@@ -1,0 +1,51 @@
+<div id="display_box">
+  <div id="thoughts-empty-nd" style="<%= @no_thoughts ? 'display:block' : 'display:none'%>">
+    <div class="message"><p>Currently there are no thoughts in your inbox</p></div>
+  </div>
+  <%= render :partial => 'thought_group', :object => @thoughts %>
+</div>
+
+<% @thought = @new_thought -%>
+<div id="input_box">
+  <div id="thought_new_thought_filler">
+    <div id="thought_new_thought_container">
+      
+      <div id="toggle_thought_new" class="hide_form">
+        <a title="Hide new thought form" accesskey="n">&laquo; Hide form</a>
+        <%  apply_behavior '#toggle_thought_new a:click', :prevent_default => true do |page|
+              page << "TracksForm.toggle('toggle_thought_new', 'thought_new', 'thought-form',
+                                         '&laquo; Hide form', 'Hide new thought form',
+                                         'Create a new thought &#187;', 'Add a thought');"
+            end
+        %>
+      </div>
+
+      <div id="thought_new" class="thought_new" style="display:block">
+        <% form_remote_tag(:url => thoughts_path, :method => :post,
+          :html=> { :id=>'thought-form', :name=>'thought', :class => 'inline-form'},
+          :before => "$('thought_new_thought_submit').startWaiting()",
+          :complete => "$('thought_new_thought_submit').stopWaiting()",
+          :condition => "!$('thought_new_thought_submit').isWaiting()") do -%>
+        
+          <div id="status"><%= error_messages_for('thought') %></div>
+        
+          <label for="thought_body">Thought Body:</label><br />
+          <%= text_area 'thought', 'description', "cols" => 30, "rows" => 4, "tabindex" => 2  %><br />
+        
+  
+          <div class="submit_box">
+            <div class="widgets">
+              <button type="submit" class="positive" id="thought_new_thought_submit">
+                <%= image_tag("accept.png", :alt => "") + 'Add Thought' %>
+              </button>
+            </div>
+          </div>
+        
+          <br/><br/>
+          <input id="go_to_thought" type="checkbox" tabindex="5" name="go_to_thought"/><label for="go_to_thought"> Take me to the new thought page</label><br /> 
+        
+        <% end -%>
+      </div>
+    </div>
+  </div>
+</div>

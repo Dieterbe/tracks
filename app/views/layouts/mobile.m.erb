@@ -16,9 +16,10 @@
         user_time.strftime(@prefs.title_date_format) -%></h1>
 <%=     (link_to("0-Add new action", formatted_new_todo_path(:m, new_todo_params))+" | ") unless @new_mobile -%>
 <%=     (link_to("1-Home", formatted_todos_path(:m))+" | ") unless @home -%>
-<%=     (link_to("2-Contexts", formatted_contexts_path(:m))+" | ") -%>
-<%=     (link_to("3-Projects", formatted_projects_path(:m))+" | ") -%>
-<%=     (link_to("4-Starred", {:action => "tag", :controller => "todos", :id => "starred.m"})) -%>
+<%=     (link_to("2-Inbox", formatted_thoughts_path(:m))+" | ") -%>
+<%=     (link_to("3-Contexts", formatted_contexts_path(:m))+" | ") -%>
+<%=     (link_to("4-Projects", formatted_projects_path(:m))+" | ") -%>
+<%=     (link_to("5-Starred", {:action => "tag", :controller => "todos", :id => "starred.m"})) -%>
 <%    end
   end -%><%= render_flash -%>
 <hr/><%=  yield -%>
@@ -26,9 +27,10 @@
 <%= (link_to("Logout", formatted_logout_path(:format => 'm')) +" | ") -%>
 <%= (link_to("0-Add new action", formatted_new_todo_path(:m), {:accesskey => "0"})+" | ") unless @new_mobile -%>
 <%= (link_to("1-Home", formatted_todos_path(:m), {:accesskey => "1"})+" | ") unless @home -%>
-<%= (link_to("2-Contexts", formatted_contexts_path(:m), {:accesskey => "2"})+" | ") -%>
-<%= (link_to("3-Projects", formatted_projects_path(:m), {:accesskey => "3"})+" | ") -%>
-<%= (link_to("4-Starred", {:action => "tag", :controller => "todos", :id => "starred.m"}, {:accesskey => "4"})+" | ") -%> 
+<%= (link_to("2-Inbox", formatted_contexts_path(:m), {:accesskey => "2"})+" | ") -%>
+<%= (link_to("3-Contexts", formatted_contexts_path(:m), {:accesskey => "3"})+" | ") -%>
+<%= (link_to("4-Projects", formatted_projects_path(:m), {:accesskey => "4"})+" | ") -%>
+<%= (link_to("5-Starred", {:action => "tag", :controller => "todos", :id => "starred.m"}, {:accesskey => "5"})+" | ") -%> 
 <%= (link_to("Tickler", {:action => "index", :controller => "tickler.m"})+" | ") -%>
 <%= (link_to("Feeds", {:action => "index", :controller => "feeds.m"})) -%>
 <% end -%>

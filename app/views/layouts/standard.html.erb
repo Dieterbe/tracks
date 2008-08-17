@@ -47,13 +47,14 @@ window.onload=function(){
 <div id="navcontainer">
 <ul id="navlist">
   <li><%= navigation_link("Home", home_path, {:accesskey => "t", :title => "Home"} ) %></li>
+  <li><%= navigation_link( "Inbox", thoughts_path, {:accesskey => "i", :title => "Inbox"} ) %></li>
   <li><%= navigation_link( "Contexts", contexts_path, {:accesskey=>"c", :title=>"Contexts"} ) %></li>
   <li><%= navigation_link( "Projects", projects_path, {:accesskey=>"p", :title=>"Projects"} ) %></li>
   <li><%= navigation_link( "Tickler", tickler_path, :title => "Tickler" ) %></li>
   <li><%= navigation_link( "Done", done_path, {:accesskey=>"d", :title=>"Completed"} ) %></li>
   <li><%= navigation_link( "Notes", notes_path, {:accesskey => "o", :title => "Show all notes"} ) %></li>
   <li><%= navigation_link( "Preferences", preferences_path, {:accesskey => "u", :title => "Show my preferences"} ) %></li>
-  <li><%= navigation_link( "Export", {:controller => "data", :action => "index"}, {:accesskey => "i", :title => "Import and export data"} ) %></li>
+  <li><%= navigation_link( "Export", {:controller => "data", :action => "index"}, {:accesskey => "e", :title => "Import and export data"} ) %></li>
   <% if current_user.is_admin? -%>
     <li><%= navigation_link("Admin", users_path, {:accesskey => "a", :title => "Add or delete users"} ) %></li>
   <% end -%>

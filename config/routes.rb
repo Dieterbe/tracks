@@ -1,4 +1,8 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :thoughts , :collection => {:order => :post, :alphabetize => :post} do |thoughts|
+    thoughts.resources :todos, :name_prefix => "thought_"
+  end
+
   UJS::routes
   
   map.with_options :controller => 'login' do |login|

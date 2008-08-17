@@ -1,0 +1,18 @@
+<h1>Listing thoughts</h1>
+
+<table>
+  <tr>
+  </tr>
+
+<% for thought in @thoughts %>
+  <tr>
+    <td><%= link_to 'Show', thought %></td>
+    <td><%= link_to 'Edit', edit_thought_path(thought) %></td>
+    <td><%= link_to 'Destroy', thought, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New thought', new_thought_path %>
