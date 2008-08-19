@@ -89,6 +89,7 @@ class TodosController < ApplicationController
         @contexts = current_user.contexts.find(:all) if @new_context_created
         @projects = current_user.projects.find(:all) if @new_project_created
         @initial_context_name = params['default_context_name']
+        @initial_project_name = params['default_project_name']
         render :action => 'create'
       end
       format.xml do
@@ -229,7 +230,7 @@ class TodosController < ApplicationController
       format.m do
         if @saved
           if cookies[:mobile_url]
-            cookies[:mobile_url] = nil
+            cookies[:mobile_url] = {:value => nil, :secure => TRACKS_COOKIES_SECURE}
             redirect_to cookies[:mobile_url]
           else
             redirect_to formatted_todos_path(:m)
@@ -370,7 +371,7 @@ class TodosController < ApplicationController
         @default_project_context_name_map = build_default_project_context_name_map(@projects).to_json
       }
       format.m { 
-        cookies[:mobile_url]=request.request_uri
+        cookies[:mobile_url]= {:value => request.request_uri, :secure => TRACKS_COOKIES_SECURE}
         render :action => "mobile_tag"         
       }
     end
@@ -608,7 +609,7 @@ class TodosController < ApplicationController
     lambda do
       @page_title = "All actions"
       @home = true
-      cookies[:mobile_url]=request.request_uri
+      cookies[:mobile_url]= { :value => request.request_uri, :secure => TRACKS_COOKIES_SECURE}
       determine_down_count
     
       render :action => 'index'

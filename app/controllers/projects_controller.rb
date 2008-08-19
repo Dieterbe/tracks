@@ -136,6 +136,10 @@ class ProjectsController < ApplicationController
         @initial_context_name = @project.default_context.name 
         render :template => 'projects/update_default_context.js.rjs'
         return
+      elsif boolean_param('update_project_name')
+        @projects = current_user.projects
+        render :template => 'projects/update_project_name.js.rjs'
+        return
       else
         render :text => success_text || 'Success'
         return
@@ -204,7 +208,7 @@ class ProjectsController < ApplicationController
       @hidden_projects = @projects.select{ |p| p.hidden? }
       @completed_projects = @projects.select{ |p| p.completed? }
       @down_count = @active_projects.size + @hidden_projects.size + @completed_projects.size 
-      cookies[:mobile_url]=request.request_uri
+      cookies[:mobile_url]= {:value => request.request_uri, :secure => TRACKS_COOKIES_SECURE}
       render :action => 'index_mobile'
     end
   end
@@ -217,7 +221,7 @@ class ProjectsController < ApplicationController
         @project_default_context = "The default context for this project is "+
           @project.default_context.name
       end
-      cookies[:mobile_url]=request.request_uri
+      cookies[:mobile_url]= {:value => request.request_uri, :secure => TRACKS_COOKIES_SECURE}
       @mobile_from_project = @project.id
       render :action => 'project_mobile'
     end

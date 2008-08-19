@@ -83,10 +83,14 @@ class ContextsController < ApplicationController
     end
     @context.attributes = params["context"]
     if @context.save
-      if params['wants_render']
+      if boolean_param('wants_render')
         respond_to do |format|
           format.js
         end
+      elsif boolean_param('update_context_name')
+        @contexts = current_user.projects
+        render :template => 'contexts/update_context_name.js.rjs'
+        return
       else
         render :text => success_text || 'Success'
       end
@@ -133,7 +137,7 @@ class ContextsController < ApplicationController
       @active_contexts = @contexts.find(:all, { :conditions => ["hide = ?", false]})
       @hidden_contexts = @contexts.find(:all, { :conditions => ["hide = ?", true]})
       @down_count = @active_contexts.size + @hidden_contexts.size 
-      cookies[:mobile_url]=request.request_uri
+      cookies[:mobile_url]= {:value => request.request_uri, :secure => TRACKS_COOKIES_SECURE}
       render :action => 'index_mobile'
     end
   end
@@ -143,7 +147,7 @@ class ContextsController < ApplicationController
       @page_title = "TRACKS::List actions in "+@context.name
       @not_done = @not_done_todos.select {|t| t.context_id == @context.id } 
       @down_count = @not_done.size 
-      cookies[:mobile_url]=request.request_uri
+      cookies[:mobile_url]= {:value => request.request_uri, :secure => TRACKS_COOKIES_SECURE}
       @mobile_from_context = @context.id
       render :action => 'mobile_show_context'
     end
