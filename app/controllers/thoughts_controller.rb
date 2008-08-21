@@ -6,8 +6,11 @@ class ThoughtsController < ApplicationController
   # GET /thoughts
   # GET /thoughts.xml
   def index
+    @page_title = "TRACKS::Thoughts overview"
+    @count = current_user.thoughts.size
     @thoughts = Thought.find(:all)
-
+    @no_thoughts = @thoughts.empty?
+   
     respond_to do |format|
       format.html # index.html.erb
       format.xml  { render :xml => @thoughts }
@@ -17,6 +20,7 @@ class ThoughtsController < ApplicationController
   # GET /thoughts/1
   # GET /thoughts/1.xml
   def show
+    @page_title = "TRACKS::Show thought"
     @thought = Thought.find(params[:id])
 
     respond_to do |format|
@@ -28,6 +32,7 @@ class ThoughtsController < ApplicationController
   # GET /thoughts/new
   # GET /thoughts/new.xml
   def new
+    @page_title = "TRACKS::New thought"
     @thought = Thought.new
 
     respond_to do |format|
@@ -38,12 +43,14 @@ class ThoughtsController < ApplicationController
 
   # GET /thoughts/1/edit
   def edit
+    @page_title = "TRACKS::Edit thought"
     @thought = Thought.find(params[:id])
   end
 
   # POST /thoughts
   # POST /thoughts.xml
   def create
+    @page_title = "TRACKS::Add a thought"
     @thought = Thought.new(params[:thought])
 
     respond_to do |format|
