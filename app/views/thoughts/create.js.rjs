@@ -1,0 +1,12 @@
+if @saved
+  page.hide 'thoughts-empty-nd'
+  page.insert_html :bottom, "list-thoughts", :partial => 'thought_listing', :locals => { :thought_listing => @thought }
+  page.sortable "list-thoughts", get_listing_sortable_options
+  page.hide 'status'
+  page['badge_count'].replace_html @down_count
+  page.call "Form.reset", "thought-form"
+  page.call "Form.focusFirstElement", "thought-form"
+else
+  page.show 'status'
+  page.replace_html 'status', "#{error_messages_for('thought')}"
+end

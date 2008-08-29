@@ -1,0 +1,35 @@
+<% thought = thought_form 
+   @thought = thought-%>
+<div id="<%= dom_id(thought, 'edit') %>" class="edit-form" style="display:none;">
+  <% form_tag(thought_path(thought), {:id => dom_id(thought, 'edit_form'), :class => "inline-form "+dom_id(thought, 'edit_form')+"-edit-thought-form edit-thought-form", :method => :put}) do -%>
+              <%= error_messages_for 'thought' %>
+  
+    <label for="thought_name">Thought name</label><br/>
+    <%= text_field('thought', 'name', :class => 'thought-name') %><br/>
+
+    <label for="thought_hide">Hide from front page?</label>    
+    <%= check_box('thought', 'hide', :class => 'thought-hide') %>
+    <input type="hidden" name="wants_render" value="true" /> 
+  
+    <div class="submit_box">
+      <div class="widgets">
+        <button type="submit" class="positive" id="<%= dom_id(thought, 'submit') %>" tabindex="15">
+          <%=image_tag("accept.png", :alt => "") %>
+          Update
+        </button>
+        <a href="javascript:void(0);" onclick="Element.toggle('<%= dom_id(thought) %>');Element.toggle('<%= dom_id(thought, 'edit') %>');" class="negative">
+          <%=image_tag("cancel.png", :alt => "") %>
+          Cancel
+        </a>
+      </div>
+    </div>
+    <br/><br/>
+  
+    <% end %>
+  <%= apply_behavior ".edit-thought-form", make_remote_form(
+      :before => "this.up('div.edit-form').down('button.positive').startWaiting()",
+      :condition => "!(this.up('div.edit-form').down('button.positive')).isWaiting()"), 
+      :external => true
+@thought = nil %>
+</div>
+
