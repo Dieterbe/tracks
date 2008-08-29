@@ -106,6 +106,7 @@ class TodosController < ApplicationController
     @projects = current_user.projects.find(:all)
     @contexts = current_user.contexts.find(:all)
     @source_view = params['_source_view'] || 'todo'
+    @tag_name = params['_tag_name']
     respond_to do |format|
       format.js
     end
@@ -212,7 +213,7 @@ class TodosController < ApplicationController
       @todo.complete!
     end
     # strange. if checkbox is not checked, there is no 'done' in params.
-    # Therfore I've used the negation
+    # Therefore I've used the negation
     if !(params['done'] == '1') && @todo.completed?
       @todo.activate!
     end
@@ -338,34 +339,40 @@ class TodosController < ApplicationController
   def tag
     @source_view = params['_source_view'] || 'tag'
     @tag_name = params[:name]
+    @page_title = "TRACKS::Tagged with \'#{@tag_name}\'"
     
     # mobile tags are routed with :name ending on .m. So we need to chomp it
     @tag_name = @tag_name.chomp('.m') if mobile?
     
     @tag = Tag.find_by_name(@tag_name)
     @tag = Tag.new(:name => @tag_name) if @tag.nil?
-    
     tag_collection = @tag.todos
-    @not_done_todos = tag_collection.find(:all, :conditions => ['taggings.user_id = ? and state = ?', current_user.id, 'active'])
+    
+    @not_done_todos = tag_collection.find(:all, 
+      :conditions => ['taggings.user_id = ? and state = ?', current_user.id, 'active'],
+      :order => 'todos.completed_at DESC, todos.created_at DESC')
     @hidden_todos = current_user.todos.find(:all, 
       :include => [:taggings, :tags, :context], 
-      :conditions => ['tags.name = ? AND (todos.state = ? OR (contexts.hide = ? AND todos.state = ?))', @tag_name, 'project_hidden', true, 'active'])
+      :conditions => ['tags.name = ? AND (todos.state = ? OR (contexts.hide = ? AND todos.state = ?))', @tag_name, 'project_hidden', true, 'active'],
+      :order => 'todos.completed_at DESC, todos.created_at DESC')
+    @deferred = tag_collection.find(:all, 
+      :conditions => ['taggings.user_id = ? and state = ?', current_user.id, 'deferred'],
+      :order => 'show_from ASC, todos.created_at DESC')
+    # If you've set no_completed to zero, the completed items box isn't shown on
+    # the tag page
+    max_completed = current_user.prefs.show_number_completed
+    @done = tag_collection.find(:all, 
+      :limit => max_completed, 
+      :conditions => ['taggings.user_id = ? and state = ?', current_user.id, 'completed'], 
+      :order => 'todos.completed_at DESC')
     
     @contexts = current_user.contexts.find(:all)
     @contexts_to_show = @contexts.reject {|x| x.hide? }
     
-    @deferred = tag_collection.find(:all, :conditions => ['taggings.user_id = ? and state = ?', current_user.id, 'deferred'])
-
-    @page_title = "TRACKS::Tagged with \'#{@tag_name}\'"
-    # If you've set no_completed to zero, the completed items box isn't shown on
-    # the home page
-    max_completed = current_user.prefs.show_number_completed
-    @done = tag_collection.find(:all, :limit => max_completed, :conditions => ['taggings.user_id = ? and state = ?', current_user.id, 'completed'])
     # Set count badge to number of items with this tag
     @not_done_todos.empty? ? @count = 0 : @count = @not_done_todos.size
     @down_count = @count 
-    # @default_project_context_name_map =
-    # build_default_project_context_name_map(@projects).to_json
+
     respond_to do |format|
       format.html {
         @default_project_context_name_map = build_default_project_context_name_map(@projects).to_json
@@ -682,6 +689,7 @@ class TodosController < ApplicationController
     if @todo.from_recurring_todo?
       @recurring_todo = current_user.recurring_todos.find(@todo.recurring_todo_id)
       date_to_check = @todo.due.nil? ? @todo.show_from : @todo.due
+      date_to_check = Date.today()-1.day if date_to_check.nil?
       if @recurring_todo.active? && @recurring_todo.has_next_todo(date_to_check)
         date = date_to_check >= Date.today() ? date_to_check : Date.today()-1.day
         @new_recurring_todo = create_todo_from_recurring_todo(@recurring_todo, date) 
